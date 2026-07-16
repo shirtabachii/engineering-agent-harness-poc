@@ -1,0 +1,42 @@
+# ArgoCD Application: syncs this repo's k8s/ (and cluster/) manifests into
+# the kind cluster automatically whenever you push.
+#
+# BEFORE APPLYING:
+#   1. Push this repo to your own GitHub/GitLab remote.
+#   2. Replace REPO_URL_PLACEHOLDER below with that remote's URL
+#      (use the https:// clone URL, not git@, unless you've configured
+#      ArgoCD with SSH creds).
+#   3. If the repo is private, add repo credentials in ArgoCD first —
+#      via the UI (Settings > Repositories) or `argocd repo add`.
+#      Do this yourself in ArgoCD's own UI/CLI; don't put tokens in this file.
+#
+# APPLY WITH:
+#   kubectl apply -f argocd/application.yaml
+#
+# This app watches the k8s/ directory. cluster/namespace-rbac.yaml is applied
+# once, manually, before this (chicken-and-egg: the namespace this Job runs in
+# needs to exist before ArgoCD can sync into it).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: engineering-agent-harness-poc
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: REPO_URL_PLACEHOLDER   # e.g. https://github.com/your-org/engineering-agent-harness-poc.git
+    targetRevision: HEAD
+    path: k8s
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: agent-harness
+
+  syncPolicy:
+    automated:
+      prune: true       # removes resources from the cluster if removed from git
+      selfHeal: true    # reverts manual kubectl changes back to match git
+    syncOptions:
+      - CreateNamespace=false   # namespace is created by cluster/namespace-rbac.yaml, not by this app

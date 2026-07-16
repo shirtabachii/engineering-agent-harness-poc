@@ -35,6 +35,23 @@ kubectl -n agent-harness logs -f job/cve-harness-run
 
 Expected output: a JSON blob with `evidence` and a `disposition` field.
 
+## GitOps with ArgoCD (optional, once pushed to a remote)
+
+```bash
+# install argocd
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# edit argocd/application.yaml: set repoURL to your pushed remote
+kubectl apply -f argocd/application.yaml
+```
+
+From then on, ArgoCD watches `k8s/` in your remote and syncs it into the
+`agent-harness` namespace automatically on every push — `kubectl apply -f k8s/agent-job.yaml`
+by hand becomes unnecessary once this is wired up. `cluster/` manifests
+(namespace + RBAC) stay applied manually since ArgoCD needs the namespace
+to already exist.
+
 ## Repo map
 
 ```
