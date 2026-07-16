@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cve-harness-run
+  namespace: agent-harness
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      serviceAccountName: harness-runner
+      restartPolicy: Never
+      containers:
+        - name: harness
+          image: agent-harness-poc:local
+          imagePullPolicy: IfNotPresent
+          args: ["/data/sample_cve.json"]
+          volumeMounts:
+            - name: cve-input
+              mountPath: /data
+      volumes:
+        - name: cve-input
+          configMap:
+            name: sample-cve
