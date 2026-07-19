@@ -35,18 +35,17 @@ def main():
         with open(cve_path) as f:
             ticket = json.load(f)
 
-    configmap_yaml = textwrap.dedent(
-        f"""
-        apiVersion: v1
-        kind: ConfigMap
-        metadata:
-          name: sample-cve
-          namespace: agent-harness
-        data:
-          sample_cve.json: |
-        {textwrap.indent(json.dumps(ticket, indent=2), " " * 4)}
-        """
-    ).strip()
+    json_block = textwrap.indent(json.dumps(ticket, indent=2), "    ")
+    configmap_yaml = (
+        "apiVersion: v1\n"
+        "kind: ConfigMap\n"
+        "metadata:\n"
+        "  name: sample-cve\n"
+        "  namespace: agent-harness\n"
+        "data:\n"
+        "  sample_cve.json: |\n"
+        f"{json_block}\n"
+    )
 
     with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
         f.write(configmap_yaml)
