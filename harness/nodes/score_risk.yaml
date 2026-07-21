@@ -1,0 +1,6 @@
+id: score_risk
+type: model
+description: score the risk
+code: "def score_risk(state):\n    return {'risk': 'high'}"
+reusable: true
+custom: true
