@@ -1,5 +1,5 @@
 id: manifest-reviewer-copy-c92c
-name: Manifest Reviewer (copy)
+name: Manifest Reviewer 2
 description: Reviews a Kubernetes manifest and opens a PR with the fix.
 trigger: UI (composed)
 model_alias: manifest-reviewer
