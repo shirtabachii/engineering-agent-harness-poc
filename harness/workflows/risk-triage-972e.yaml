@@ -1,0 +1,17 @@
+id: risk-triage-972e
+name: Risk Triage
+description: demo composed via UI
+trigger: UI (composed)
+model_alias: manifest-reviewer
+graph:
+  nodes:
+  - id: gather_evidence
+    type: deterministic
+  - id: score_risk
+    type: model
+  edges:
+  - from: gather_evidence
+    to: score_risk
+  - from: score_risk
+    to: END
+created: true
