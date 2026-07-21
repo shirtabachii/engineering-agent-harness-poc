@@ -1,0 +1,29 @@
+id: manifest-reviewer-copy-c92c
+name: Manifest Reviewer (copy)
+description: Reviews a Kubernetes manifest and opens a PR with the fix.
+trigger: UI (composed)
+model_alias: manifest-reviewer
+graph:
+  nodes:
+  - id: fetch_manifest
+    type: tool
+  - id: inspect_manifest
+    type: deterministic
+  - id: review_manifest
+    type: model
+  - id: propose_fix
+    type: model
+  - id: open_pr
+    type: tool
+  edges:
+  - from: fetch_manifest
+    to: inspect_manifest
+  - from: inspect_manifest
+    to: review_manifest
+  - from: review_manifest
+    to: propose_fix
+  - from: propose_fix
+    to: open_pr
+  - from: open_pr
+    to: END
+created: true
